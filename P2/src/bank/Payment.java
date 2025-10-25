@@ -1,49 +1,41 @@
 package bank;
 
-// Klasse beschreibt eine Ein- bzw. Auszahlung
-public class Payment {
+/**
+ * Klasse beschreibt eine Ein- bzw. Auszahlung
+ * Wenn Amount negativ ist, ist das eine Auszahlung, sonst eine Einzahlung.
+ * Die Klasse erbt von Transaction
+ * @see Transaction
+ */
+public class Payment extends Transaction {
     // /////////////
     // Private Argumente
     // /////////////
 
-    // Datum der Ein- oder Auszahlung
-    private String date; // DD.MM.YYYY
-    // Geldmenge
-    private double amount;
-    // Zusätzliche Beschreibung
-    private String description;
-    // Zinsen bei Einzahlung in Prozent (zwischen 0 und 1)
+    /// Zinsen bei Einzahlung in Prozent (zwischen 0 und 1)
     private double incomingInterest;
-    // Zinsen bei Auszahlung in Prozent (zwischen 0 und 1)
+    /// Zinsen bei Auszahlung in Prozent (zwischen 0 und 1)
     private double outgoingInterest;
 
-    // Getter
-    public double getAmount() {
-        return amount;
-    }
+    /**
+     * Rückgabe des Einzahlungszinses
+     * @return Einzahlungszinses
+     */
     public double getIncomingInterest() {
         return incomingInterest;
     }
+
+    /**
+     * Rückgabe des Auszahlungszinses
+     * @return Auszahlungszinses
+     */
     public double getOutgoingInterest() {
         return outgoingInterest;
     }
-    public String getDate() {
-        return date;
-    }
-    public String getDescription() {
-        return description;
-    }
 
-    // Setter
-    public void setAmount(double a) {
-        amount = a;
-    }
-    public void setDate(String d) {
-        date = d;
-    }
-    public void setDescription(String des) {
-        description = des;
-    }
+    /**
+     * Setzen des Einzahlungszinses
+     * @param incInt neuer Zinswert
+     */
     public void setIncomingInterest(double incInt) {
         if (incInt < 0 || incInt > 1) {// Test ob zwischen 0 und 1
             System.out.println("Zinswert nicht okay");
@@ -51,6 +43,11 @@ public class Payment {
             incomingInterest = incInt;
         }
     }
+
+    /**
+     * Setzen des Auszahlungszinses
+     * @param outInt neuer Zinswert
+     */
     public void setOutgoingInterest(double outInt) {
         if(outInt < 0 || outInt > 1) { // Test ob zwischen 0 und 1
             System.out.println("Zinswert nicht okay");
@@ -59,27 +56,52 @@ public class Payment {
         }
     }
 
+    /**
+     * Geldbetrag nach Berechnung des Zinses
+     * @return berechneter
+     */
+    @Override
+    public double calculateBill() {
+        if(amount < 0) // Bei einer Auszahlung outgoingInterest draufrechnen
+            return amount*(1+outgoingInterest);
+        else // Bei einer Einzahlung incomingInterest abziehen
+            return amount*(1-incomingInterest);
+    }
+
     // //////////////////
     // Konstruktoren
     // //////////////////
 
-    // Konstruktor mit drei Argumenten => Verweis auf allgemeinen Konstruktor
+    /**
+     * Konstruktor mit drei Parametern
+     * @param dat Datum der Ein-/Auszahlung
+     * @param am Geldbetrag positiv bei Einzahlung, negativ bei Auszahlung
+     * @param des Verwendungszweck
+     */
     public Payment(String dat, double am, String des) {
-        setDate(dat);
-        setAmount(am);
-        setDescription(des);
+        super(dat, am, des);
         setIncomingInterest(0.1);
         setOutgoingInterest(0.1);
     }
 
-    // Allgemeine Konstruktor
+    /**
+     * Allgemeiner Konstruktor mit allen Parametern
+     * @param dat Datum der Ein-/Auszahlung
+     * @param am Geldbetrag positiv bei Einzahlung, negativ bei Auszahlung
+     * @param des Verwendungszweck
+     * @param incInt Gebühren bei Einzahlung
+     * @param outInt Gebühren bei Auszahlung
+     */
     public Payment(String dat, double am, String des, double incInt, double outInt) {
         this(dat,am,des);
         setIncomingInterest(incInt);
         setOutgoingInterest(outInt);
     }
 
-    // Copy-Konstruktor
+    /**
+     * Copy-Konstruktor
+     * @param p die zu kopierende Instanz
+     */
     public Payment(Payment p) {
         this(p.getDate(),p.getAmount(),p.getDescription(),p.getIncomingInterest(),p.getOutgoingInterest());
     }
@@ -88,13 +110,33 @@ public class Payment {
     // Funktionen
     // ////////////////
 
-    // Ausgabe
-    public void printObject() {
-        System.out.println("Datum: "+getDate());
-        System.out.println("Geldmenge: "+getAmount());
-        System.out.println("Beschreibung: "+getDescription());
-        System.out.println("Einzahlungszinsen: "+getIncomingInterest());
-        System.out.println("Auszahlungszinsen: "+getOutgoingInterest());
-        System.out.println();
+    /**
+     * Erzeugt einen String mit allen Argumenten aneinander gehangen
+     * @return Gibt String mit allen Argumenten zurück
+     */
+    @Override
+    public String toString() {
+        return ( ("Datum: "+getDate())
+                + " " + ("Geldmenge: "+calculateBill())
+                + " " + ("Beschreibung: "+getDescription()) )
+                + " " + ("Einzahlungszinsen: "+getIncomingInterest())
+                + " " + ("Auszahlungszinsen: "+getOutgoingInterest());
+    }
+
+    /**
+     * vergleicht die Parameter einer anderen Instanz auf Gleichheit
+     * @param obj das zu vergleichende Objekt
+     * @return Gibt True zurück bei Gleichheit
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Payment) {
+            Payment otherTf = (Payment) obj;
+            return (super.equals( (Transaction) otherTf )
+                    && this.getIncomingInterest() == otherTf.getIncomingInterest()
+                    && this.getOutgoingInterest() == otherTf.getOutgoingInterest()
+            );
+        }
+        return false;
     }
 }
