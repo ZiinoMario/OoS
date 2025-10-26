@@ -1,8 +1,7 @@
 package bank;
 
 /**
- * Klasse beschreibt eine Überweisung,
- * die Klasse erbt von Transaction
+ * Unterklasse die eine Überweiung beschreibt und von Transaction erbt
  * @see Transaction
  */
 public class Transfer extends Transaction {
@@ -15,17 +14,25 @@ public class Transfer extends Transaction {
     /// Empfänger welcher das Geld bekommt
     private String recipient;
 
-    // Getter
+    /**
+     * Gibt den Empfänger der Überweisung als String zurück
+     * @return Empfänger als String
+     */
     public String getRecipient() {
         return recipient;
     }
+
+    /**
+     * Gibt den Sender der Überweisung als String zurück
+     * @return Sender als String
+     */
     public String getSender() {
         return sender;
     }
 
     /**
      * Ändert den Geldbetrag mit Überprüfung ob dieser positiv ist
-     * @param a der neue Geldbetrag
+     * @param a neuer Geldbetrag
      */
     @Override
     public void setAmount(double a) {
@@ -35,19 +42,28 @@ public class Transfer extends Transaction {
             amount = a;
         }
     }
+
+    /**
+     * Ändert den Empfänger
+     * @param rec neuer Empfänger
+     */
     public void setRecipient(String rec) {
         recipient = rec;
     }
+    /**
+     * Ändert den Sender
+     * @param sen neuer Sender
+     */
     public void setSender(String sen) {
         sender=sen;
     }
 
     /**
-     * Implementation der Umrechnung
-     * @return gibt den Geldbetrag der Überweisung zurück
+     * Implementation der Berechnung, gibt den Geldbetrag der Überweisung zurück
+     * @return Ergebnis der Berechnung
      */
     @Override
-    public double calculateBill() {
+    public double calculate() {
         return getAmount();
     }
 
@@ -101,7 +117,7 @@ public class Transfer extends Transaction {
     @Override
     public String toString() {
         return ( ("Datum: "+getDate())
-                + " " + ("Geldmenge: "+calculateBill())
+                + " " + ("Geldmenge: "+ calculate())
                 + " " + ("Beschreibung: "+getDescription()) )
                 + " " + ("Sender: "+getSender())
                 + " " + ("Empfänger: "+getRecipient());

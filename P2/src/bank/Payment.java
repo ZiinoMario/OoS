@@ -1,7 +1,7 @@
 package bank;
 
 /**
- * Klasse beschreibt eine Ein- bzw. Auszahlung
+ * Unterklasse die eine Ein-/Auszahlung beschreibt und von Transaction erbt.
  * Wenn Amount negativ ist, ist das eine Auszahlung, sonst eine Einzahlung.
  * Die Klasse erbt von Transaction
  * @see Transaction
@@ -57,11 +57,20 @@ public class Payment extends Transaction {
     }
 
     /**
+     * Ändert den Geldbetrag
+     * @param a neuer Geldbetrag
+     */
+    @Override
+    public void setAmount(double a) {
+        amount = a;
+    }
+
+    /**
      * Geldbetrag nach Berechnung des Zinses
      * @return berechneter
      */
     @Override
-    public double calculateBill() {
+    public double calculate() {
         if(amount < 0) // Bei einer Auszahlung outgoingInterest draufrechnen
             return amount*(1+outgoingInterest);
         else // Bei einer Einzahlung incomingInterest abziehen
@@ -117,7 +126,7 @@ public class Payment extends Transaction {
     @Override
     public String toString() {
         return ( ("Datum: "+getDate())
-                + " " + ("Geldmenge: "+calculateBill())
+                + " " + ("Geldmenge: "+ calculate())
                 + " " + ("Beschreibung: "+getDescription()) )
                 + " " + ("Einzahlungszinsen: "+getIncomingInterest())
                 + " " + ("Auszahlungszinsen: "+getOutgoingInterest());

@@ -4,5 +4,9 @@ package bank;
  * Interface zur Berechnung des Geldbetrags
  */
 public interface CalculateBill {
-    double calculateBill();
+    /**
+     * Führt die Berechnung für eine Rechnung durch
+     * @return Ergebnis der Berechnung
+     */
+    double calculate();
 }

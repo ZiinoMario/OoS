@@ -14,24 +14,46 @@ public abstract class Transaction implements CalculateBill {
     /// Zusätzliche Beschreibung
     protected String description;
 
-    // Setter
+    /**
+     * Ändert das Datum
+     * @param d das neue Datum
+     */
     public void setDate(String d) {
         date = d;
     }
-    public void setAmount(double a) {
-        amount=a;
-    }
+    /**
+     * Zwingt Unterklassen, diese Methode zu implementieren, da sie sich unterschiedlich für
+     * Ein-/Auszahlungen und Überweisungen verhalten soll
+     * @param a der neue Geldbetrag
+     */
+    abstract public void setAmount(double a);
+    /**
+     * Ändert die Beschreibung
+     * @param des die neue Beschreibung
+     */
     public void setDescription(String des) {
         description = des;
     }
 
-    // Getter
+    /**
+     * Gibt den Geldbetrag zurück
+     * @return Gibt Geldbetrag als double zurück
+     */
     public double getAmount() {
         return amount;
     }
+    /**
+     * Gibt die Beschreibung zurück
+     * @return Gibt Beschreibung als String zurück
+     */
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Gibt das Datum als String in dem Format DD.MM.YYYY zurück
+     * @return Datum im Format DD.MM.YYYY
+     */
     public String getDate() {
         return date;
     }

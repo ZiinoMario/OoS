@@ -10,10 +10,10 @@ public class Main {
 
         // Konstruktor für alle Argumente
         Payment alleArgsPayment = new Payment("07.01.2025",1000,"Gehalt",2,0.2);
-        System.out.println(alleArgsPayment.toString());
+        System.out.println("Berechnete Rechnung: "+alleArgsPayment.calculate()+" "+alleArgsPayment.toString());
         // Auszahlung
-        Payment alleArgsAuszahlungPayment = new Payment("07.01.2025",-1000,"Gehalt",2,0.2);
-        System.out.println(alleArgsAuszahlungPayment.toString());
+        Payment alleArgsAuszahlungPayment = new Payment("07.01.2025",-1000,"Gehalt",1,0.2);
+        System.out.println("Berechnete Rechnung: "+alleArgsAuszahlungPayment.calculate()+" "+alleArgsAuszahlungPayment.toString());
 
         // Copy-Konstruktor Payment Test
         Payment copyPayment = new Payment(alleArgsPayment);
@@ -27,11 +27,11 @@ public class Main {
 
         // Konstruktor für alle Argumente
         Transfer alleArgsTransfer = new Transfer("04.03.2025",20,"Taschengeld","Vater","Kind");
-        System.out.println(alleArgsTransfer.toString());
+        System.out.println("Berechnete Rechnung: "+alleArgsTransfer.calculate()+" "+alleArgsTransfer.toString());
 
         // Konstruktor mit negativem Überweisungsbetrag
         Transfer alleArgsNegativTestTransfer = new Transfer("04.03.2025",-20,"Taschengeld","Vater","Kind");
-        System.out.println(alleArgsNegativTestTransfer.toString());
+        System.out.println("Berechnete Rechnung: "+alleArgsNegativTestTransfer.calculate()+" "+alleArgsNegativTestTransfer.toString());
 
         // Copy-Konstruktor Transfer Test
         Transfer copyTransfer = new Transfer(dreiArgsTransfer);
