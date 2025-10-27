@@ -1,7 +1,7 @@
 package bank;
 
 /**
- * Unterklasse die eine Überweiung beschreibt und von Transaction erbt
+ * Die Klasse stellt eine Überweiung dar und erbt von {@link Transaction}
  * @see Transaction
  */
 public class Transfer extends Transaction {
@@ -11,6 +11,7 @@ public class Transfer extends Transaction {
 
     /// Sender welcher überweist
     private String sender;
+
     /// Empfänger welcher das Geld bekommt
     private String recipient;
 
@@ -36,7 +37,7 @@ public class Transfer extends Transaction {
      */
     @Override
     public void setAmount(double a) {
-        if(amount < 0) { // Test ob Wert unter 0€
+        if(a < 0) { // Test ob Wert unter 0€
             System.out.println("Geldbetrag keine positive Zahl");
         } else {
             amount = a;
@@ -50,6 +51,7 @@ public class Transfer extends Transaction {
     public void setRecipient(String rec) {
         recipient = rec;
     }
+
     /**
      * Ändert den Sender
      * @param sen neuer Sender
@@ -117,10 +119,10 @@ public class Transfer extends Transaction {
     @Override
     public String toString() {
         return ( ("Datum: "+getDate())
-                + " " + ("Geldmenge: "+ calculate())
-                + " " + ("Beschreibung: "+getDescription()) )
-                + " " + ("Sender: "+getSender())
-                + " " + ("Empfänger: "+getRecipient());
+                + " " + (";Rechnung: "+ calculate())
+                + " " + (";Beschreibung: "+getDescription()) )
+                + " " + (";Sender: "+getSender())
+                + " " + (";Empfänger: "+getRecipient());
     }
 
     /**
@@ -130,8 +132,7 @@ public class Transfer extends Transaction {
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Transfer) {
-            Transfer otherTf = (Transfer) obj;
+        if(obj instanceof Transfer otherTf) {
             return (super.equals( (Transaction) otherTf )
                     && this.getSender().equals(otherTf.getSender())
                     && this.getRecipient().equals(otherTf.getRecipient())

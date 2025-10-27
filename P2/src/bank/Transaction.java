@@ -1,18 +1,18 @@
 package bank;
 
 /**
- * Oberklasse die eine Transaktion darstellt
- * Diese Klasse stellt Transaktionen dar mit einem Datum, der Geldbetrag und der Beschreibung der Transaktion
+ * Die abstrakte Oberklasse stellt eine Transaktion dar
+ * Da hierbei zwingend eine Rechnung erforderlich ist, implementiert die Klasse das Interface {@link CalculateBill}
  * @see CalculateBill
  */
 public abstract class Transaction implements CalculateBill {
 
     /// Datum der Ein- oder Auszahlung
-    protected String date; // DD.MM.YYYY
+    private String date; // DD.MM.YYYY
     /// Geldmenge
     protected double amount;
     /// Zusätzliche Beschreibung
-    protected String description;
+    private String description;
 
     /**
      * Ändert das Datum
@@ -21,12 +21,14 @@ public abstract class Transaction implements CalculateBill {
     public void setDate(String d) {
         date = d;
     }
+
     /**
      * Zwingt Unterklassen, diese Methode zu implementieren, da sie sich unterschiedlich für
      * Ein-/Auszahlungen und Überweisungen verhalten soll
      * @param a der neue Geldbetrag
      */
     abstract public void setAmount(double a);
+
     /**
      * Ändert die Beschreibung
      * @param des die neue Beschreibung
@@ -77,8 +79,8 @@ public abstract class Transaction implements CalculateBill {
     @Override
     public String toString() {
         return ( ("Datum: "+getDate())
-                + " " + ("Geldmenge: "+getAmount())
-                + " " + ("Beschreibung: "+getDescription()) );
+                + " " + (";Geldmenge: "+getAmount())
+                + " " + (";Beschreibung: "+getDescription()) );
     }
 
     /**
@@ -88,8 +90,8 @@ public abstract class Transaction implements CalculateBill {
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Transaction otherT) {
-            return (this.getDate().equals(otherT.getDate())
+        if(obj instanceof Transaction otherT) { // Vergleich ob otherT auch von der Klasse Transaction ist
+            return (this.getDate().equals(otherT.getDate()) // Vergleich der Attribute
                     && this.getAmount() == otherT.getAmount()
                     && this.getDescription().equals(otherT.getDescription())
             );

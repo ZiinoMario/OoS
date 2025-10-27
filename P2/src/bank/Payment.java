@@ -1,9 +1,8 @@
 package bank;
 
 /**
- * Unterklasse die eine Ein-/Auszahlung beschreibt und von Transaction erbt.
+ * Die Klasse stellt eine Ein-/Auszahlung dar und erbt von {@link Transaction}.
  * Wenn Amount negativ ist, ist das eine Auszahlung, sonst eine Einzahlung.
- * Die Klasse erbt von Transaction
  * @see Transaction
  */
 public class Payment extends Transaction {
@@ -126,7 +125,7 @@ public class Payment extends Transaction {
     @Override
     public String toString() {
         return ( ("Datum: "+getDate())
-                + " " + ("Geldmenge: "+ calculate())
+                + " " + ("Rechnung: "+ calculate())
                 + " " + ("Beschreibung: "+getDescription()) )
                 + " " + ("Einzahlungszinsen: "+getIncomingInterest())
                 + " " + ("Auszahlungszinsen: "+getOutgoingInterest());
@@ -139,8 +138,7 @@ public class Payment extends Transaction {
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Payment) {
-            Payment otherTf = (Payment) obj;
+        if(obj instanceof Payment otherTf) {
             return (super.equals( (Transaction) otherTf )
                     && this.getIncomingInterest() == otherTf.getIncomingInterest()
                     && this.getOutgoingInterest() == otherTf.getOutgoingInterest()

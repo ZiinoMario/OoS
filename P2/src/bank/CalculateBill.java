@@ -1,12 +1,12 @@
 package bank;
 
 /**
- * Interface zur Berechnung des Geldbetrags
+ * Interface für die Berechnung einer Rechnung
  */
 public interface CalculateBill {
     /**
      * Führt die Berechnung für eine Rechnung durch
-     * @return Ergebnis der Berechnung
+     * @return Gibt das Ergebnis der Berechnung zurück
      */
     double calculate();
 }
