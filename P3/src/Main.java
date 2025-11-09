@@ -17,10 +17,7 @@ public class Main {
         out("Equals Test");
         PrivateBank pb = new PrivateBank("Tolle Bank",0.5,0.5);
         PrivateBank cp = new PrivateBank(pb);
-        if(pb.equals(cp))
-            out("equals funktioniert für copy: " + cp);
-        else
-            out("equals funktioniert nicht für copy" + cp);
+        out("equals mit copy: " + pb.equals(cp));
 
         // // account ohne Transaktionen erstellen
         // Doppelten Account erstellen

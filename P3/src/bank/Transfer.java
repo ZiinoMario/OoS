@@ -131,12 +131,12 @@ public class Transfer extends Transaction {
      */
     @Override
     public boolean equals(Object obj) {
-        /*if(obj instanceof Transfer otherTf) {
+        if(obj instanceof Transfer otherTf) {
             return (super.equals( otherTf )
                     && this.getSender().equals(otherTf.getSender())
                     && this.getRecipient().equals(otherTf.getRecipient())
             );
-        }*/
+        }
         return false;
     }
 }

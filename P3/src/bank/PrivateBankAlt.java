@@ -7,6 +7,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Simuliert eine private Bank mit festgelegten Eingangs- und Ausgangszinsen
+ * Nutzt instanceof für getAccountBalance
+ */
 public class PrivateBankAlt implements Bank {
     ///  Name der privaten Bank
     private String name;
@@ -109,13 +113,13 @@ public class PrivateBankAlt implements Bank {
      */
     @Override
     public boolean equals(Object obj) {
-        /*if(obj instanceof PrivateBankAlt pb) {
+        if(obj instanceof PrivateBankAlt pb) {
             return ( getName().equals(pb.getName()) &&
                     getIncomingInterest() == pb.getIncomingInterest() &&
                     getOutgoingInterest() == pb.getOutgoingInterest() &&
                     this.accountsToTransactions.equals(pb.accountsToTransactions)
                     );
-        }*/
+        }
         return false;
     }
 
@@ -168,13 +172,13 @@ public class PrivateBankAlt implements Bank {
             throw new AccountDoesNotExistException(account);
         if(containsTransaction(account, transaction))
             throw new TransactionAlreadyExistException(transaction.toString());
-        /*if(transaction instanceof Transfer)
+        if(transaction instanceof Transfer)
             if(transaction.getAmount() < 0)
                 throw new TransactionAttributeException(transaction.getAmount());
         if (transaction instanceof Payment p) {
             p.setIncomingInterest(this.getIncomingInterest());
             p.setOutgoingInterest(this.getOutgoingInterest());
-        }*/
+        }
         accountsToTransactions.get(account).add(transaction);
     }
 
@@ -216,7 +220,7 @@ public class PrivateBankAlt implements Bank {
     @Override
     public double getAccountBalance(String account) {
         double sum=0;
-        /*for(Transaction t : getTransactions(account)) {
+        for(Transaction t : getTransactions(account)) {
             if(t instanceof Payment) {
                 sum+=t.calculate();
             } else if (t instanceof Transfer tf) {
@@ -226,7 +230,7 @@ public class PrivateBankAlt implements Bank {
                     sum += tf.calculate();
                 }
             }
-        }*/
+        }
         return sum;
     }
 

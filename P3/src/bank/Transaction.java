@@ -91,12 +91,12 @@ public abstract class Transaction implements CalculateBill {
      */
     @Override
     public boolean equals(Object obj) {
-        //if(obj instanceof Transaction otherT) { // Vergleich ob otherT auch von der Klasse Transaction ist
-          //  return (this.getDate().equals(otherT.getDate()) // Vergleich der Attribute
-            //        && Double.compare(this.getAmount(), otherT.getAmount())==0
-              //      && this.getDescription().equals(otherT.getDescription())
-            //);
-        //}
+        if(obj instanceof Transaction otherT) { // Vergleich ob otherT auch von der Klasse Transaction ist
+            return (this.getDate().equals(otherT.getDate()) // Vergleich der Attribute
+                    && Double.compare(this.getAmount(), otherT.getAmount())==0
+                    && this.getDescription().equals(otherT.getDescription())
+            );
+        }
         return false;
     }
 }

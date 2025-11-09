@@ -129,12 +129,12 @@ public class Payment extends Transaction {
      */
     @Override
     public boolean equals(Object obj) {
-        /*if(obj instanceof Payment otherTf) {
+        if(obj instanceof Payment otherTf) {
             return (super.equals( otherTf )
                     && this.getIncomingInterest() == otherTf.getIncomingInterest()
                     && this.getOutgoingInterest() == otherTf.getOutgoingInterest()
             );
-        }*/
+        }
         return false;
     }
 }

@@ -1,5 +1,9 @@
 package bank;
 
+/**
+ * Die Klasse stellt eine eingehende Überweiung dar und erbt von {@link Transfer}
+ * @see Transfer
+ */
 public class IncomingTransfer extends Transfer {
 
     /**

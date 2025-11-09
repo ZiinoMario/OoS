@@ -160,7 +160,6 @@ abstract class bank.Transaction {
 
 bank.exceptions.RuntimeException <|-- bank.exceptions.AccountDoesNotExistException
 bank.exceptions.RuntimeException <|-- bank.exceptions.TransactionAlreadyExistException
-bank.Transfer <|-- bank.ImportantTransfer
 bank.Bank <|.. bank.PrivateBankAlt
 bank.exceptions.RuntimeException <|-- bank.exceptions.TransactionDoesNotExistException
 bank.Bank <|.. bank.PrivateBank
