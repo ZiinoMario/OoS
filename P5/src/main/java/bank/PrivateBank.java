@@ -102,12 +102,10 @@ public class PrivateBank implements Bank {
         File[] persistenteAccounts = new File(directoryName).listFiles();
         if(persistenteAccounts == null) return;
 
-        Gson gson = new Gson();
-
-        HashMap<String, Class<? extends Transaction>> mapStringToTransactionclass = new HashMap<>();
-        mapStringToTransactionclass.put("bank.IncomingTransfer",IncomingTransfer.class);
-        mapStringToTransactionclass.put("bank.OutgoingTransfer",OutgoingTransfer.class);
-        mapStringToTransactionclass.put("bank.Payment",Payment.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Transaction.class, new TransactionSerializable())
+                .setPrettyPrinting()
+                .create();
 
         // Für alle Persistenten Accounts
         for(File accountDatei : persistenteAccounts)
@@ -121,43 +119,24 @@ public class PrivateBank implements Bank {
                     .getAsJsonArray();
 
             // Name des Account welcher erstellt wird
-            String account = accountDatei.getName()
-                    .replace("Konto ","")
-                    .replace(".json","");
+            String account = accountDatei.getName().replace("Konto ","").replace(".json","");
 
             // Gehe jede Transaktion in dem JsonArray durch
-            try {
-                createAccount(account);
-            }
+            try { createAccount(account); }
             catch (AccountAlreadyExistsException e) {
-                System.out.println("Account doppelt: " + e.getMessage());
-            }
+                System.out.println("Account doppelt: " + e.getMessage()); }
 
             for(JsonElement jsonTransactionElement : transaktionen.asList())
             {
-                
-
-                JsonObject jsonTransaction = jsonTransactionElement.getAsJsonObject();
-
-                // Art der Transaktion herausfinden
-                String transactionClass = jsonTransaction.get(("CLASSNAME")).getAsString();
-
-                // Deserialisierung und hinzufügen der Transaktionen
-                try {
-                    addTransaction(
-                            account,
-                            gson.fromJson(
-                                    jsonTransaction.get("INSTANCE"),
-                                    mapStringToTransactionclass.get(transactionClass)
-                            )
-                    );
+                try
+                {
+                    addTransaction(account,gson.fromJson(jsonTransactionElement, Transaction.class));
                 }
                 catch (AccountDoesNotExistException | TransactionAlreadyExistException | TransactionAttributeException e)
                 {
                     System.out.println("Problem beim einlesen des Accounts: " + e.getMessage());
                 }
             }
-
             reader.close();
         }
     }

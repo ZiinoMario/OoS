@@ -18,15 +18,19 @@ public class TransactionSerializable implements Serializable, JsonSerializer<Tra
 
     @Override
     public Transaction deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        HashMap<String, Class<? extends Transaction>> getTransactionClassFromStringMap = new HashMap<>();
-        getTransactionClassFromStringMap.put("bank.IncomingTransfer",IncomingTransfer.class);
-        getTransactionClassFromStringMap.put("bank.OutgoingTransfer",OutgoingTransfer.class);
-        getTransactionClassFromStringMap.put("bank.Payment",Payment.class);
+        Gson gson = new Gson();
 
-        JsonObject jsonObjTransaction = jsonElement.getAsJsonObject();
-        getTransactionClassFromStringMap.get(jsonObjTransaction.get("CLASSNAME"));
+        HashMap<String, Class<? extends Transaction>> mapStringToTransactionclass = new HashMap<>();
+        mapStringToTransactionclass.put("bank.IncomingTransfer",IncomingTransfer.class);
+        mapStringToTransactionclass.put("bank.OutgoingTransfer",OutgoingTransfer.class);
+        mapStringToTransactionclass.put("bank.Payment",Payment.class);
 
+        JsonObject jsonTransaction = jsonElement.getAsJsonObject();
 
-        return null;
+        String transactionClass = jsonTransaction.get(("CLASSNAME")).getAsString();
+        return gson.fromJson(
+                jsonTransaction.get("INSTANCE"),
+                mapStringToTransactionclass.get( transactionClass )
+        );
     }
 }
