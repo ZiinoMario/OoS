@@ -7,7 +7,7 @@ public class Main {
     public static void out(String message) {
         System.out.println(message);
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TransactionAlreadyExistException, AccountDoesNotExistException, TransactionAttributeException, AccountAlreadyExistsException {
         OutgoingTransfer t1 = new OutgoingTransfer("07.11.2025",20,"Taschengeld","Voss","Tutor");
         IncomingTransfer t2 = new IncomingTransfer("07.11.2025",10,"Bestechung","Mario","Voss");
         IncomingTransfer t3 = new IncomingTransfer("07.11.2025",1000,"Gehalt","Rektor","Voss");
@@ -17,7 +17,9 @@ public class Main {
         out("Equals Test");
         PrivateBank pb = new PrivateBank("Tolle Bank",0.5,0.5);
         PrivateBank cp = new PrivateBank(pb);
+        PrivateBank pb2 = new PrivateBank("Andere Bank",0.5,0.5);
         out("equals mit copy: " + pb.equals(cp));
+        out("equals mit anderer Bank: " + pb.equals(pb2));
 
         // // account ohne Transaktionen erstellen
         // Doppelten Account erstellen
@@ -42,13 +44,20 @@ public class Main {
         try {
             ArrayList<Transaction> transaktionen = new ArrayList<Transaction>();
             transaktionen.add(t1);
-            pb.createAccount("Voss",transaktionen);
-            out(pb.toString() + "\r\n" + pb.getTransactions("Voss").toString());
-            // Transaktion doppelt hinzufügen
-            pb.addTransaction("Voss",t1);
+            pb.createAccount("Voss", transaktionen);
+            pb.createAccount("Voss", transaktionen);
+        } catch (AccountAlreadyExistsException | TransactionAlreadyExistException | TransactionAttributeException e) {
+            out(e.getMessage());
+        } try {
+            Transfer tt = new Transfer(t1);
+            pb.addTransaction("Voss",tt);
+        } catch (TransactionAlreadyExistException | AccountDoesNotExistException | TransactionAttributeException e) {
+            out(e.getMessage());
+        } try {
+            Transfer tt = new Transfer(t1);
+            t2.setAmount(-20);
         }
-        // Multi Catch führt selben Code für verschiedene Catches auf
-        catch (AccountAlreadyExistsException | TransactionAlreadyExistException | TransactionAttributeException e) {
+        catch (TransactionAttributeException e) {
             out(e.getMessage());
         }
 
@@ -61,11 +70,11 @@ public class Main {
         out("");
         out("//Payment Parameter anpassen Test");
         try {
-            Payment p = new Payment("07.11.2025",10,"Einzahlung",1,1);
+            Payment p = new Payment("07.11.2025",100,"Einzahlung",1,1);
             pb.addTransaction("Mario",p);
             out(p.toString());
-        } catch (AccountAlreadyExistsException | TransactionAlreadyExistException | TransactionAttributeException e) {
-            throw new RuntimeException(e);
+        } catch (AccountDoesNotExistException | TransactionAlreadyExistException | TransactionAttributeException e) {
+            out(e.getMessage());
         }
 
         out("");
@@ -86,7 +95,7 @@ public class Main {
         } else {
             out("Transaktion existiert nicht (korrekt)");
         }
-        pb.addTransaction("Voss",t1);
+        pb.addTransaction("Voss", t1);
         if(pb.containsTransaction("Voss",t1)) {
             out("Transaktion existiert (korrekt)");
         } else {
@@ -105,18 +114,11 @@ public class Main {
         out(pb.getTransactionsSorted("Voss",true).toString());
         out(pb.getTransactionsSorted("Voss",false).toString());
 
-        PrivateBankAlt pbalt = new PrivateBankAlt("AlternativBank",0.3,0.3);
-        out("");
-        out("//get Account Balance Vererbung");
-        out("Konstostand: " + pb.getAccountBalance("Voss"));
 
-        pbalt.createAccount("Voss");
-        pbalt.addTransaction("Voss", new Transfer("07.11.2025",20,"Taschengeld","Voss","Tutor"));
-        pbalt.addTransaction("Voss", t2);
-        pbalt.addTransaction("Voss", t3);
         out("");
-        out("//get Account Balance instanceof");
-        out("Konstostand: " + pbalt.getAccountBalance("Voss"));
+        out("//get Transactions By Type Test (1. positive/2. negative)");
+        out("Positive: " + pb.getTransactionsByType("Voss",true).toString());
+        out("Negative: " + pb.getTransactionsByType("Voss",false).toString());
 
     }
 }

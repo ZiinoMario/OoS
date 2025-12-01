@@ -152,7 +152,11 @@ public class PrivateBank implements Bank {
             throw new AccountAlreadyExistsException(account);
         createAccount(account);
         for(Transaction t : transactions) {
-            addTransaction(account,t);
+            try {
+                addTransaction(account,t);
+            } catch (AccountDoesNotExistException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -171,13 +175,6 @@ public class PrivateBank implements Bank {
             throw new AccountDoesNotExistException(account);
         if(containsTransaction(account, transaction))
             throw new TransactionAlreadyExistException(transaction.toString());
-        if(transaction instanceof Transfer)
-            if(transaction.getAmount() < 0)
-                throw new TransactionAttributeException(transaction.getAmount());
-        if (transaction instanceof Payment p) {
-            p.setIncomingInterest(this.getIncomingInterest());
-            p.setOutgoingInterest(this.getOutgoingInterest());
-        }
         accountsToTransactions.get(account).add(transaction);
     }
 
@@ -263,7 +260,7 @@ public class PrivateBank implements Bank {
         for(Transaction t : getTransactions(account)) {
             if(positive && t.calculate()>0) {
                 tbt.add(t);
-            } else {
+            } else if (!positive && t.calculate()<0) {
                 tbt.add(t);
             }
         }

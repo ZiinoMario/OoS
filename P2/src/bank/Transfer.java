@@ -80,10 +80,9 @@ public class Transfer extends Transaction {
      * @param des Verwendungszweck der Überweisung
      */
     public Transfer(String dat, double am, String des) {
-        super(dat, 0, des);
+        super(dat, am, des);
         setSender("Sender");
         setRecipient("Empfaenger");
-        setAmount(am);
     }
 
     /**
@@ -133,7 +132,7 @@ public class Transfer extends Transaction {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Transfer otherTf) {
-            return (super.equals( (Transaction) otherTf )
+            return (super.equals( otherTf )
                     && this.getSender().equals(otherTf.getSender())
                     && this.getRecipient().equals(otherTf.getRecipient())
             );

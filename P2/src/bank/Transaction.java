@@ -23,11 +23,12 @@ public abstract class Transaction implements CalculateBill {
     }
 
     /**
-     * Zwingt Unterklassen, diese Methode zu implementieren, da sie sich unterschiedlich für
-     * Ein-/Auszahlungen und Überweisungen verhalten soll
+     * Ändert den Geldbetrag
      * @param a der neue Geldbetrag
      */
-    abstract public void setAmount(double a);
+    public void setAmount(double a) {
+        amount = a;
+    }
 
     /**
      * Ändert die Beschreibung
@@ -92,7 +93,7 @@ public abstract class Transaction implements CalculateBill {
     public boolean equals(Object obj) {
         if(obj instanceof Transaction otherT) { // Vergleich ob otherT auch von der Klasse Transaction ist
             return (this.getDate().equals(otherT.getDate()) // Vergleich der Attribute
-                    && this.getAmount() == otherT.getAmount()
+                    && this.getAmount() == otherT.getAmount() // TODO: Double.compare
                     && this.getDescription().equals(otherT.getDescription())
             );
         }

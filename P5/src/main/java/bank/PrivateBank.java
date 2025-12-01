@@ -1,7 +1,12 @@
 package bank;
 
 import bank.exceptions.*;
+import com.google.gson.*;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,9 +14,8 @@ import java.util.List;
 
 /**
  * Simuliert eine private Bank mit festgelegten Eingangs- und Ausgangszinsen
- * Nutzt instanceof für getAccountBalance
  */
-public class PrivateBankAlt implements Bank {
+public class PrivateBank implements Bank {
     ///  Name der privaten Bank
     private String name;
     /// Zinsen bei Einzahlung in Prozent (zwischen 0 und 1)
@@ -20,7 +24,8 @@ public class PrivateBankAlt implements Bank {
     private double outgoingInterest;
     /// Verknüpft Konten mit Überweisungen
     private HashMap<String, ArrayList<Transaction>> accountsToTransactions = new HashMap<String, ArrayList<Transaction>>();
-
+    /// Speicherort der Konten
+    private String directoryName;
     /**
      * Rückgabe des Namens der privaten Bank
      * @return Name
@@ -57,9 +62,9 @@ public class PrivateBankAlt implements Bank {
      * Setzen des Einzahlungszinses
      * @param incInt neuer Zinswert
      */
-    public void setIncomingInterest(double incInt) {
+    public void setIncomingInterest(double incInt) throws TransactionAttributeException {
         if (incInt < 0 || incInt > 1) {// Test ob zwischen 0 und 1
-            System.out.println("Zinswert nicht okay");
+            throw new TransactionAttributeException(incInt);
         } else {
             incomingInterest = incInt;
         }
@@ -69,32 +74,142 @@ public class PrivateBankAlt implements Bank {
      * Setzen des Auszahlungszinses
      * @param outInt neuer Zinswert
      */
-    public void setOutgoingInterest(double outInt) {
+    public void setOutgoingInterest(double outInt) throws TransactionAttributeException {
         if(outInt < 0 || outInt > 1) { // Test ob zwischen 0 und 1
-            System.out.println("Zinswert nicht okay");
+            throw new TransactionAttributeException(outInt);
         } else {
             outgoingInterest = outInt;
         }
     }
 
+    /// Gibt den Pfad des Ordners zurück, wo die Konten gespeichert werden
+    public String getDirectoryName() {
+        return directoryName;
+    }
+
+    /** Ändert den Pfad des Ordners, in welchem die Konten gespeichert sind
+     * @param newDirectoryName neuer Pfad
+     */
+    private void setDirectoryName(String newDirectoryName) {
+        directoryName = newDirectoryName;
+    }
+
+    /**
+     * Deserialisiert alle persistenten Accounts ein und fügt diese in der Map accountsToTransactions hinzu
+     * @throws IOException
+     */
+    private void readAccounts() throws IOException {
+        File[] persistenteAccounts = new File(directoryName).listFiles();
+        if(persistenteAccounts == null) return;
+
+        Gson gson = new Gson();
+
+        HashMap<String, Class<? extends Transaction>> mapStringToTransactionclass = new HashMap<>();
+        mapStringToTransactionclass.put("bank.IncomingTransfer",IncomingTransfer.class);
+        mapStringToTransactionclass.put("bank.OutgoingTransfer",OutgoingTransfer.class);
+        mapStringToTransactionclass.put("bank.Payment",Payment.class);
+
+        // Für alle Persistenten Accounts
+        for(File accountDatei : persistenteAccounts)
+        {
+            // Lies die Accountdatei ein und parse sie zu einem JsonArray
+            FileReader reader = new FileReader(
+                    directoryName+accountDatei.getName()
+            );
+            JsonArray transaktionen = JsonParser
+                    .parseReader(reader)
+                    .getAsJsonArray();
+
+            // Name des Account welcher erstellt wird
+            String account = accountDatei.getName()
+                    .replace("Konto ","")
+                    .replace(".json","");
+
+            // Gehe jede Transaktion in dem JsonArray durch
+            try {
+                createAccount(account);
+            }
+            catch (AccountAlreadyExistsException e) {
+                System.out.println("Account doppelt: " + e.getMessage());
+            }
+
+            for(JsonElement jsonTransactionElement : transaktionen.asList())
+            {
+                
+
+                JsonObject jsonTransaction = jsonTransactionElement.getAsJsonObject();
+
+                // Art der Transaktion herausfinden
+                String transactionClass = jsonTransaction.get(("CLASSNAME")).getAsString();
+
+                // Deserialisierung und hinzufügen der Transaktionen
+                try {
+                    addTransaction(
+                            account,
+                            gson.fromJson(
+                                    jsonTransaction.get("INSTANCE"),
+                                    mapStringToTransactionclass.get(transactionClass)
+                            )
+                    );
+                }
+                catch (AccountDoesNotExistException | TransactionAlreadyExistException | TransactionAttributeException e)
+                {
+                    System.out.println("Problem beim einlesen des Accounts: " + e.getMessage());
+                }
+            }
+
+            reader.close();
+        }
+    }
+
+    /**
+     * Serialisiert den angegebenen Account in ein JSON-Objekt
+     * @param account zu serialisierender Account
+     * @throws IOException
+     */
+    private void writeAccount(String account) throws IOException {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(IncomingTransfer.class, new TransactionSerializable())
+                .registerTypeAdapter(OutgoingTransfer.class, new TransactionSerializable())
+                .registerTypeAdapter(Payment.class, new TransactionSerializable())
+                .setPrettyPrinting()
+                .create();
+
+        JsonArray acc = new JsonArray();
+
+        for(Transaction t : getTransactions(account))
+        {
+            acc.add(gson.toJsonTree(t));
+        }
+
+        FileWriter writer = new FileWriter(
+                directoryName+"Konto "+account+".json"
+        );
+
+        writer.write(gson.toJson(acc));
+        writer.close();
+    }
+
     /**
      * Konstruktor für eine private Bank
-     * @param n Name der Bank
+     * @param name Name der Bank
      * @param incInt Einzahlungszins
      * @param outInt Auszahlungszins
      */
-    public PrivateBankAlt(String n, double incInt, double outInt) {
-        setName(n);
+    public PrivateBank(String name, double incInt, double outInt, String directory) throws TransactionAttributeException, TransactionAlreadyExistException, AccountDoesNotExistException, IOException {
+        setName(name);
         setIncomingInterest(incInt);
         setOutgoingInterest(outInt);
+        setDirectoryName(directory);
+        readAccounts();
     }
 
     /**
      * Copy Konstruktor
-     * @param pb Element welches kopiert werden soll
+     * @param pb PrivateBank welche kopiert werden soll
      */
-    public PrivateBankAlt(PrivateBankAlt pb) {
-        this(pb.getName(),pb.getIncomingInterest(),pb.getOutgoingInterest());
+    public PrivateBank(PrivateBank pb) throws TransactionAttributeException, TransactionAlreadyExistException, AccountDoesNotExistException, IOException {
+        this(pb.getName(),pb.getIncomingInterest(),pb.getOutgoingInterest(),pb.getDirectoryName());
     }
 
     /**
@@ -109,11 +224,11 @@ public class PrivateBankAlt implements Bank {
     /**
      * Vergleicht bei zwei Instanzen alle Parameter auf Gleichheit
      * @param obj   the reference object with which to compare.
-     * @return
+     * @return true bei Gleichheit aller Argumente
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof PrivateBankAlt pb) {
+        if(obj instanceof PrivateBank pb) {
             return ( getName().equals(pb.getName()) &&
                     getIncomingInterest() == pb.getIncomingInterest() &&
                     getOutgoingInterest() == pb.getOutgoingInterest() &&
@@ -131,10 +246,11 @@ public class PrivateBankAlt implements Bank {
      * @throws AccountAlreadyExistsException if the account already exists
      */
     @Override
-    public void createAccount(String account) throws AccountAlreadyExistsException {
+    public void createAccount(String account) throws AccountAlreadyExistsException, IOException {
         if(accountsToTransactions.containsKey(account))
             throw new AccountAlreadyExistsException(account);
         accountsToTransactions.put(account,new ArrayList<Transaction>());
+        writeAccount(account);
     }
 
     /**
@@ -148,13 +264,18 @@ public class PrivateBankAlt implements Bank {
      * @throws TransactionAttributeException    if the validation check for certain attributes fail
      */
     @Override
-    public void createAccount(String account, List<Transaction> transactions) throws AccountAlreadyExistsException, TransactionAlreadyExistException, TransactionAttributeException {
+    public void createAccount(String account, List<Transaction> transactions) throws AccountAlreadyExistsException, TransactionAlreadyExistException, TransactionAttributeException, IOException {
         if(accountsToTransactions.containsKey(account))
             throw new AccountAlreadyExistsException(account);
         createAccount(account);
         for(Transaction t : transactions) {
-            addTransaction(account,t);
+            try {
+                addTransaction(account,t);
+            } catch (AccountDoesNotExistException e) {
+                throw new RuntimeException(e);
+            }
         }
+        writeAccount(account);
     }
 
     /**
@@ -167,19 +288,13 @@ public class PrivateBankAlt implements Bank {
      * @throws TransactionAttributeException    if the validation check for certain attributes fail
      */
     @Override
-    public void addTransaction(String account, Transaction transaction) throws TransactionAlreadyExistException, AccountDoesNotExistException, TransactionAttributeException {
+    public void addTransaction(String account, Transaction transaction) throws TransactionAlreadyExistException, AccountDoesNotExistException, TransactionAttributeException, IOException {
         if(!accountsToTransactions.containsKey(account))
             throw new AccountDoesNotExistException(account);
         if(containsTransaction(account, transaction))
             throw new TransactionAlreadyExistException(transaction.toString());
-        if(transaction instanceof Transfer)
-            if(transaction.getAmount() < 0)
-                throw new TransactionAttributeException(transaction.getAmount());
-        if (transaction instanceof Payment p) {
-            p.setIncomingInterest(this.getIncomingInterest());
-            p.setOutgoingInterest(this.getOutgoingInterest());
-        }
         accountsToTransactions.get(account).add(transaction);
+        writeAccount(account);
     }
 
     /**
@@ -192,12 +307,13 @@ public class PrivateBankAlt implements Bank {
      * @throws TransactionDoesNotExistException if the transaction cannot be found
      */
     @Override
-    public void removeTransaction(String account, Transaction transaction) throws AccountDoesNotExistException, TransactionDoesNotExistException {
+    public void removeTransaction(String account, Transaction transaction) throws AccountDoesNotExistException, TransactionDoesNotExistException, IOException {
         if(!accountsToTransactions.containsKey(account))
             throw new AccountDoesNotExistException(account);
         if(!containsTransaction(account, transaction))
             throw new TransactionDoesNotExistException(transaction.toString());
         accountsToTransactions.get(account).remove(transaction);
+        writeAccount(account);
     }
 
     /**
@@ -221,15 +337,7 @@ public class PrivateBankAlt implements Bank {
     public double getAccountBalance(String account) {
         double sum=0;
         for(Transaction t : getTransactions(account)) {
-            if(t instanceof Payment) {
-                sum+=t.calculate();
-            } else if (t instanceof Transfer tf) {
-                if(tf.getSender().equals(account)) {
-                    sum -= tf.calculate();
-                } else {
-                    sum += tf.calculate();
-                }
-            }
+            sum += t.calculate();
         }
         return sum;
     }
@@ -272,7 +380,7 @@ public class PrivateBankAlt implements Bank {
         for(Transaction t : getTransactions(account)) {
             if(positive && t.calculate()>0) {
                 tbt.add(t);
-            } else {
+            } else if (!positive && t.calculate()<0) {
                 tbt.add(t);
             }
         }

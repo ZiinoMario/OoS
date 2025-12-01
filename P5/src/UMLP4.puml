@@ -1,0 +1,147 @@
+@startuml
+skinparam classAttributeIconSize 0
+class bank.exceptions.AccountDoesNotExistException {
++ AccountDoesNotExistException(message:String)
+}
+
+class bank.exceptions.TransactionAlreadyExistException {
++ TransactionAlreadyExistException(message:String)
+}
+
+
+class bank.exceptions.TransactionDoesNotExistException {
++ TransactionDoesNotExistException(message:String)
+}
+
+class bank.PrivateBank {
+- name: String
+- incomingInterest: double
+- outgoingInterest: double
+- accountsToTransactions: HashMap<String,ArrayList<Transaction>>
+- directoryName: String
++ PrivateBank(date:String,incomingInterest:double,outgoingInterest:double)
++ PrivateBank(copy:PrivateBank)
++ getName(): String
++ setName(name:String): void
++ getIncomingInterest(): double
++ getOutgoingInterest(): double
++ setIncomingInterest(incomingInterest:double): void
++ setOutgoingInterest(outgoingInterest:double): void
++ toString(): String
++ equals(obj:Object): boolean
++ createAccount(account:String): void
++ createAccount(account:String,accountsToTransactions:List<Transaction>): void
++ addTransaction(account:String,t:Transaction): void
++ removeTransaction(account:String,t;Transaction): void
++ containsTransaction(account:String,t:Transaction): boolean
++ getAccountBalance(account:String): double
++ getTransactions(account:String): List<Transaction>
++ getTransactionsSorted(account:String,asc:boolean): List<Transaction>
++ getTransactionsByType(account:String,positive:boolean): List<Transaction>
+}
+
+
+interface bank.Bank {
+~ createAccount(account:String): void
+~ createAccount(account:String,accountsToTransactions:List<Transaction>): void
+~ addTransaction(account:String,t:Transaction): void
+~ removeTransaction(account:String,t:Transaction): void
+~ containsTransaction(account:String,t:Transaction): boolean
+~ getAccountBalance(account:String): double
+~ getTransactions(account:String): List<Transaction>
+~ getTransactionsSorted(account:String,asc:boolean): List<Transaction>
+~ getTransactionsByType(account:String,positive:boolean): List<Transaction>
+}
+
+class bank.IncomingTransfer {
++ IncomingTransfer(date:String,amount:double,description:String)
++ IncomingTransfer(date:String,amount:double,description:String,sender:String,recipient:String)
++ calculate(): double
+}
+
+class Main {
++ {static} out(message:String): void
++ {static} main(args:String[]): void
+}
+
+class bank.Transfer {
+- sender: String
+- recipient: String
++ Transfer(date:String,amount:double,description:String)
++ Transfer(date:String,amount:double,description:String,sender:String,recipient:String)
++ Transfer(copy:Transfer)
++ getRecipient(): String
++ getSender(): String
++ setAmount(amount:double): void
++ setRecipient(recipient:String): void
++ setSender(sender:String): void
++ calculate(): double
++ toString(): String
++ equals(obj:Object): boolean
+}
+
+
+class bank.Payment {
+- incomingInterest: double
+- outgoingInterest: double
++ Payment(date:String,amount:double,description:String)
++ Payment(date:String,amount:double,description:String,sender:String,recipient:String)
++ Payment(copy:Payment)
++ getIncomingInterest(): double
++ getOutgoingInterest(): double
++ setIncomingInterest(incomingInterest:double): void
++ setOutgoingInterest(outgoingInterest:double): void
++ calculate(): double
++ toString(): String
++ equals(obj:Object): boolean
+}
+
+
+interface bank.CalculateBill {
+~ calculate(): double
+}
+
+class bank.exceptions.AccountAlreadyExistsException {
++ AccountAlreadyExistsException(message:String)
+}
+
+class bank.exceptions.TransactionAttributeException {
++ TransactionAttributeException(message:String)
+}
+
+class bank.OutgoingTransfer {
++ OutgoingTransfer(date:String,amount:double,description:String)
++ OutgoingTransfer(date:String,amount:double,description:String,sender:String,recipient:String)
++ calculate(): double
+}
+
+abstract class bank.Transaction {
+- date: String
+# amount: double
+- description: String
++ Transaction(date:String,amount:double,description:String)
++ setDate(date:String): void
++ setAmount(amount:double): void
++ setDescription(description:String): void
++ double getAmount(): double
++ getDescription(): String
++ getDate(): String
++ toString(): String
++ equals(obj:Object): boolean
+}
+
+
+
+
+bank.exceptions.RuntimeException <|-- bank.exceptions.AccountDoesNotExistException
+bank.exceptions.RuntimeException <|-- bank.exceptions.TransactionAlreadyExistException
+bank.exceptions.RuntimeException <|-- bank.exceptions.TransactionDoesNotExistException
+bank.Bank <|.. bank.PrivateBank
+bank.Transfer <|-- bank.IncomingTransfer
+bank.Transaction <|-- bank.Transfer
+bank.Transaction <|-- bank.Payment
+bank.exceptions.RuntimeException <|-- bank.exceptions.AccountAlreadyExistsException
+bank.exceptions.RuntimeException <|-- bank.exceptions.TransactionAttributeException
+bank.Transfer <|-- bank.OutgoingTransfer
+bank.CalculateBill <|.. bank.Transaction
+@enduml

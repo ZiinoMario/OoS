@@ -56,15 +56,6 @@ public class Payment extends Transaction {
     }
 
     /**
-     * Ändert den Geldbetrag
-     * @param a neuer Geldbetrag
-     */
-    @Override
-    public void setAmount(double a) {
-        amount = a;
-    }
-
-    /**
      * Geldbetrag nach Berechnung des Zinses
      * @return berechneter
      */
@@ -139,7 +130,7 @@ public class Payment extends Transaction {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Payment otherTf) {
-            return (super.equals( (Transaction) otherTf )
+            return (super.equals( otherTf )
                     && this.getIncomingInterest() == otherTf.getIncomingInterest()
                     && this.getOutgoingInterest() == otherTf.getOutgoingInterest()
             );

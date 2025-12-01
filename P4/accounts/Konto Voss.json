@@ -1,0 +1,42 @@
+[
+  {
+    "CLASSNAME": "bank.OutgoingTransfer",
+    "INSTANCE": {
+      "sender": "Voss",
+      "recipient": "Tutor",
+      "date": "07.11.2025",
+      "amount": 20.0,
+      "description": "Taschengeld"
+    }
+  },
+  {
+    "CLASSNAME": "bank.IncomingTransfer",
+    "INSTANCE": {
+      "sender": "Mario",
+      "recipient": "Voss",
+      "date": "07.11.2025",
+      "amount": 10.0,
+      "description": "Bestechung"
+    }
+  },
+  {
+    "CLASSNAME": "bank.IncomingTransfer",
+    "INSTANCE": {
+      "sender": "Rektor",
+      "recipient": "Voss",
+      "date": "07.11.2025",
+      "amount": 1000.0,
+      "description": "Gehalt"
+    }
+  },
+  {
+    "CLASSNAME": "bank.Payment",
+    "INSTANCE": {
+      "incomingInterest": 0.1,
+      "outgoingInterest": 0.1,
+      "date": "23.11.2025",
+      "amount": -40.0,
+      "description": "Auszahlung"
+    }
+  }
+]
