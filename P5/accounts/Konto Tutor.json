@@ -1,0 +1,62 @@
+[
+  {
+    "CLASSNAME": "bank.OutgoingTransfer",
+    "INSTANCE": {
+      "sender": "Tutor",
+      "recipient": "Freund",
+      "date": "07.12.2025",
+      "amount": 20.0,
+      "description": "Essen"
+    }
+  },
+  {
+    "CLASSNAME": "bank.Payment",
+    "INSTANCE": {
+      "incomingInterest": 0.0,
+      "outgoingInterest": 0.0,
+      "date": "07.12.2025",
+      "amount": 100.0,
+      "description": "Erste Einzahlung"
+    }
+  },
+  {
+    "CLASSNAME": "bank.IncomingTransfer",
+    "INSTANCE": {
+      "sender": "Prof",
+      "recipient": "Tutor",
+      "date": "07.12.2025",
+      "amount": 200.0,
+      "description": "Bezahlung"
+    }
+  },
+  {
+    "CLASSNAME": "bank.Payment",
+    "INSTANCE": {
+      "incomingInterest": 0.5,
+      "outgoingInterest": 0.5,
+      "date": "07.12.2025",
+      "amount": 50.0,
+      "description": "yo"
+    }
+  },
+  {
+    "CLASSNAME": "bank.Payment",
+    "INSTANCE": {
+      "incomingInterest": 0.5,
+      "outgoingInterest": 0.5,
+      "date": "07.12.2025",
+      "amount": -50.0,
+      "description": "no"
+    }
+  },
+  {
+    "CLASSNAME": "bank.Payment",
+    "INSTANCE": {
+      "incomingInterest": 0.0,
+      "outgoingInterest": 0.0,
+      "date": "08.12.2025",
+      "amount": -50.0,
+      "description": "gib"
+    }
+  }
+]

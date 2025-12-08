@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="559.0" prefWidth="811.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MainviewController">
+  <children>
+     <ListView fx:id="listviewAccountsList" layoutX="14.0" layoutY="14.0" prefHeight="531.0" prefWidth="562.0">
+        <contextMenu>
+           <ContextMenu fx:id="contextMenu">
+             <items>
+               <MenuItem fx:id="contextAuswaehlen" mnemonicParsing="false" text="Auswählen" onAction="#accountAuswaehlen"/>
+                 <MenuItem fx:id="contextLoeschen" mnemonicParsing="false" text="Löschen" onAction="#accountLoeschen"/>
+             </items>
+           </ContextMenu>
+        </contextMenu>
+     </ListView>
+     <Button fx:id="buttonAddAccount" layoutX="604.0" layoutY="510.0" mnemonicParsing="false" onAction="#accountErstellen" prefHeight="24.0" prefWidth="178.0" text="Account hinzufügen" />
+  </children>
+</AnchorPane>

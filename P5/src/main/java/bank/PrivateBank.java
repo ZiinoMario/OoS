@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 /**
  * Simuliert eine private Bank mit festgelegten Eingangs- und Ausgangszinsen
@@ -364,5 +367,31 @@ public class PrivateBank implements Bank {
             }
         }
         return tbt;
+    }
+
+    /**
+     * Deletes a given account
+     *
+     * @param account the selected account
+     * @throws AccountDoesNotExistException if the specified account does not exist
+     */
+    @Override
+    public void deleteAccount(String account) throws AccountDoesNotExistException, IOException {
+        if(!getAllAccounts().contains(account))
+            throw new AccountDoesNotExistException(account);
+        accountsToTransactions.remove(account);
+        File file = new File(getDirectoryName() + "Konto " + account + ".json");
+        if(!file.delete())
+            throw new IOException();
+    }
+
+    /**
+     * Returns a list of all accounts
+     *
+     * @return the list of all accounts
+     */
+    @Override
+    public List<String> getAllAccounts() {
+        return accountsToTransactions.keySet().stream().toList();
     }
 }

@@ -120,10 +120,10 @@ public class Transfer extends Transaction {
     @Override
     public String toString() {
         return ( ("Datum: "+getDate())
-                + " " + (";Rechnung: "+ calculate())
-                + " " + (";Beschreibung: "+getDescription()) )
-                + " " + (";Sender: "+getSender())
-                + " " + (";Empfänger: "+getRecipient());
+                + " " + ("Rechnung: "+ calculate())
+                + " " + ("Beschreibung: "+getDescription()) )
+                + " " + ("Sender: "+getSender())
+                + " " + ("Empfänger: "+getRecipient());
     }
 
     /**

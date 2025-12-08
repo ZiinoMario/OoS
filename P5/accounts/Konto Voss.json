@@ -12,16 +12,6 @@
   {
     "CLASSNAME": "bank.IncomingTransfer",
     "INSTANCE": {
-      "sender": "Mario",
-      "recipient": "Voss",
-      "date": "07.11.2025",
-      "amount": 10.0,
-      "description": "Bestechung"
-    }
-  },
-  {
-    "CLASSNAME": "bank.IncomingTransfer",
-    "INSTANCE": {
       "sender": "Rektor",
       "recipient": "Voss",
       "date": "07.11.2025",
@@ -32,11 +22,51 @@
   {
     "CLASSNAME": "bank.Payment",
     "INSTANCE": {
-      "incomingInterest": 0.1,
-      "outgoingInterest": 0.1,
-      "date": "23.11.2025",
-      "amount": -40.0,
-      "description": "Auszahlung"
+      "incomingInterest": 0.5,
+      "outgoingInterest": 0.5,
+      "date": "07.12.2025",
+      "amount": 20.0,
+      "description": "Ausgleich"
+    }
+  },
+  {
+    "CLASSNAME": "bank.OutgoingTransfer",
+    "INSTANCE": {
+      "sender": "Voss",
+      "recipient": "Rektor",
+      "date": "07.12.2025",
+      "amount": 200.0,
+      "description": "Schutzgeld"
+    }
+  },
+  {
+    "CLASSNAME": "bank.Payment",
+    "INSTANCE": {
+      "incomingInterest": 0.0,
+      "outgoingInterest": 0.0,
+      "date": "07.12.2025",
+      "amount": -100.0,
+      "description": "no"
+    }
+  },
+  {
+    "CLASSNAME": "bank.IncomingTransfer",
+    "INSTANCE": {
+      "sender": "Rektor",
+      "recipient": "Voss",
+      "date": "08.12.2025",
+      "amount": 7000.0,
+      "description": "Gehalt"
+    }
+  },
+  {
+    "CLASSNAME": "bank.Payment",
+    "INSTANCE": {
+      "incomingInterest": 1.0,
+      "outgoingInterest": 1.0,
+      "date": "08.12.2025",
+      "amount": 1.0,
+      "description": "1"
     }
   }
 ]
